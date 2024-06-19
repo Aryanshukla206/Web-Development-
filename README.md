@@ -20,5 +20,5 @@ A simple HTML and CSS project that displays flags of different countries with a 
 <br>
 <h2>How to View</h2>
 <br>
-  Simply open the index.html file in your browser to see the flags in action.
+  Simply open the <a href="https://github.com/Aryanshukla206/Web-Development-/blob/main/index.html">index.html</a> file in your browser to see the flags in action.
 <hr>
