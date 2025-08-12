@@ -22,3 +22,74 @@ A simple HTML and CSS project that displays flags of different countries with a 
 <br>
   Simply open the <a href="https://github.com/Aryanshukla206/Web-Development-/blob/main/index.html">index.html</a> file in your browser to see the flags in action.
 <hr>
+
+```mermaid
+flowchart LR
+  subgraph Clients
+    A[Web Client]
+    B[Mobile Client]
+  end
+
+  subgraph Infra
+    PM[Process Manager / Orchestration<br/>(PM2 / Kubernetes)]
+    LB[Load Balancer]
+  end
+
+  subgraph Server["API Server (app)"]
+    HTTP[HTTP Server<br/>(createServer(app))]
+    Socket[SocketService<br/>(WebSocket / Socket.IO)]
+    Routes[API Routes<br/>(initializeApiRoutes)]
+  end
+
+  subgraph Services["Application Services"]
+    DB[MongoDBService<br/>(MongoDB)]
+    Entity[EntitySportsService<br/>(provider worker)]
+    Updater[CricketDataUpdaterService<br/>(update mode)]
+    Shorts[ShortsServices<br/>(YouTube shorts sync)]
+    Logger[Logger / Error Reporting<br/>(Sentry / Datadog)]
+  end
+
+  subgraph External["External Systems"]
+    CricketAPIs[Cricket Data Providers / RSS / APIs]
+    YouTube[YouTube Data APIs]
+    ThirdPartyAuth[Auth / OAuth / Payment (optional)]
+  end
+
+  %% Client -> LB -> HTTP
+  A -->|HTTPS| LB
+  B -->|HTTPS| LB
+  LB --> HTTP
+
+  %% HTTP internals
+  HTTP --> Routes
+  HTTP --> Socket
+  Routes --> DB
+  Socket --> DB
+  Socket --> A
+  Socket --> B
+
+  %% Services interactions
+  Entity -->|writes/updates| DB
+  Updater -->|writes/updates| DB
+  Shorts -->|writes/updates| DB
+  Updater -->|fetches from| CricketAPIs
+  Entity -->|ingests from| CricketAPIs
+  Shorts -->|fetches from| YouTube
+
+  %% Logging & monitoring
+  HTTP --> Logger
+  Entity --> Logger
+  Updater --> Logger
+
+  %% Orchestration
+  PM --> LB
+  PM --> Entity
+  PM --> Updater
+  PM --> HTTP
+
+  %% Legend (optional)
+  classDef infra fill:#f8f9fa,stroke:#bbb;
+  class Infra,Server,Services,External infra;
+
+
+```
